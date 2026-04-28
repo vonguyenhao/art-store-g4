@@ -1,0 +1,3 @@
+storage/*.log
+storage/mail/*.log
+!storage/mail/.gitkeep
