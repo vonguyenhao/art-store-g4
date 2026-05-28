@@ -12,10 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $action = $_POST['action'] ?? '';
 
-    if ($action === 'add') {
+       if ($action === 'add') {
         $cartService->add((int) ($_POST['product_no'] ?? 0), (int) ($_POST['quantity'] ?? 1));
         $session->flash('Artwork added to cart.');
-    }
+        redirect('/');
+        }
 
     if ($action === 'update') {
         $cartService->update($_POST['quantities'] ?? []);

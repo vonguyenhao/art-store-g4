@@ -6,6 +6,13 @@ $view = app('view');
 $csrf = app('csrf');
 $view->header('Shop');
 
+
+?>
+
+
+
+<?php
+
 try {
     $products = app('products')->available();
     $latestNews = app('news')->latestPublished();

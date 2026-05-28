@@ -33,10 +33,21 @@ final class View
         <header class="site-header">
             <a class="brand" href="/"><?= e($this->config['app_name']) ?></a>
             <nav>
+                
                 <a href="/">Shop</a>
                 <a href="/testimonials.php">Testimonials</a>
                 <a href="/cart.php">Cart (<?= $this->cart->count() ?>)</a>
-                <?php if ($this->auth->check()): ?>
+
+                    <?php if (isset($_SESSION['customer_email'])): ?>
+                        <a href="/account.php">My Account</a>
+                        <a href="/my_orders.php">My Orders</a>
+                        <a href="/logout.php">Customer Logout</a>
+                    <?php else: ?>
+                        <a href="/login.php">Customer Login</a>
+                        <a href="/register.php">Register</a>
+                    <?php endif; ?>
+
+                    <?php if ($this->auth->check()): ?>
                     <a href="/admin/index.php">Admin</a>
                     <a href="/admin/logout.php">Logout</a>
                 <?php else: ?>
