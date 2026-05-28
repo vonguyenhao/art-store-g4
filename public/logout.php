@@ -1,7 +1,12 @@
 <?php
-session_start();
 
-session_destroy();
+require __DIR__ . '/../src/bootstrap.php';
 
-header('Location: login.php');
-exit;
+$session = app('session');
+
+unset($_SESSION['customer_email']);
+unset($_SESSION['customer_name']);
+
+$session->flash('You have been logged out.');
+
+redirect('/');

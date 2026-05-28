@@ -41,9 +41,9 @@ final class View
                     <?php if (isset($_SESSION['customer_email'])): ?>
                         <a href="/account.php">My Account</a>
                         <a href="/my_orders.php">My Orders</a>
-                        <a href="/logout.php">Customer Logout</a>
+                        <a href="/logout.php">Logout</a>
                     <?php else: ?>
-                        <a href="/login.php">Customer Login</a>
+                        <a href="/login.php">Login</a>
                         <a href="/register.php">Register</a>
                     <?php endif; ?>
 
