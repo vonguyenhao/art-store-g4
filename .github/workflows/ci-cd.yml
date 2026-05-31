@@ -37,7 +37,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y php-cli php-mbstring php-mysql default-mysql-client
           php -v
-          php -r "foreach (['mbstring', 'mysqli', 'pdo_mysql'] as $extension) { if (!extension_loaded($extension)) { fwrite(STDERR, $extension . ' is not available' . PHP_EOL); exit(1); } echo $extension . ' is available' . PHP_EOL; }"
+          for extension in mbstring mysqli pdo_mysql; do
+            if php -m | grep -q "^${extension}$"; then
+              echo "${extension} is available"
+            else
+              echo "${extension} is not available"
+              exit 1
+            fi
+          done
           mysql --version
 
       - name: Validate Composer file
