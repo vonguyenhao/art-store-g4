@@ -35,20 +35,25 @@ try {
 <section class="grid" aria-label="Available artworks">
     <?php foreach ($products as $product): ?>
         <article class="card">
-            <h2><?= e($product['description']) ?></h2>
+            <h2>
+                <a href="/product.php?id=<?= (int) $product['product_no'] ?>">
+                    <?= e($product['description']) ?>
+                </a>
+            </h2>
             <p class="muted">
                 <?= e($product['category']) ?>
                 <?php if ($product['colour']): ?> | <?= e($product['colour']) ?><?php endif; ?>
                 <?php if ($product['size']): ?> | <?= e($product['size']) ?><?php endif; ?>
             </p>
             <p class="price"><?= money($product['price']) ?></p>
+            <p><a href="/product.php?id=<?= (int) $product['product_no'] ?>">View details</a></p>
             <form method="post" action="/cart.php">
                 <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
                 <input type="hidden" name="action" value="add">
                 <input type="hidden" name="product_no" value="<?= (int) $product['product_no'] ?>">
                 <label>
                     Quantity
-                    <input type="number" name="quantity" value="1" min="1" max="20">
+                    <input type="number" name="quantity" value="1" min="1" max="20" required>
                 </label>
                 <button type="submit">Add to cart</button>
             </form>

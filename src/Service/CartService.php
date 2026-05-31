@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Core\Session;
 use App\Repository\ProductRepository;
+use RuntimeException;
 
 final class CartService
 {
@@ -22,8 +23,20 @@ final class CartService
 
     public function add(int $productNo, int $quantity): void
     {
+        if ($productNo < 1) {
+            throw new RuntimeException('Please choose a valid artwork.');
+        }
+
+        if ($quantity < 1) {
+            throw new RuntimeException('Please enter a quantity of at least 1.');
+        }
+
+        if (!$this->products->availableById($productNo)) {
+            throw new RuntimeException('This artwork is no longer available.');
+        }
+
         $cart = $this->raw();
-        $cart[$productNo] = ($cart[$productNo] ?? 0) + max(1, min(20, $quantity));
+        $cart[$productNo] = min(20, ((int) ($cart[$productNo] ?? 0)) + min(20, $quantity));
         $this->set($cart);
     }
 
@@ -33,6 +46,13 @@ final class CartService
         foreach ($quantities as $productNo => $quantity) {
             $cart[(int) $productNo] = max(0, min(20, (int) $quantity));
         }
+        $this->set($cart);
+    }
+
+    public function remove(int $productNo): void
+    {
+        $cart = $this->raw();
+        unset($cart[$productNo]);
         $this->set($cart);
     }
 
@@ -51,9 +71,12 @@ final class CartService
         $cart = $this->raw();
         $items = [];
         $total = 0.0;
+        $availableProductNos = [];
 
         foreach ($this->products->availableByIds(array_keys($cart)) as $product) {
-            $quantity = (int) ($cart[(int) $product['product_no']] ?? 0);
+            $productNo = (int) $product['product_no'];
+            $availableProductNos[] = $productNo;
+            $quantity = (int) ($cart[$productNo] ?? 0);
             if ($quantity < 1) {
                 continue;
             }
@@ -63,11 +86,25 @@ final class CartService
             $total += $lineTotal;
         }
 
-        return [$items, $total];
+        $removedCount = count(array_diff(array_map('intval', array_keys($cart)), $availableProductNos));
+        if ($removedCount > 0) {
+            $this->set(array_intersect_key($cart, array_flip($availableProductNos)));
+        }
+
+        return [$items, $total, $removedCount];
     }
 
     private function set(array $cart): void
     {
-        $this->session->set('cart', array_filter($cart, fn ($quantity) => (int) $quantity > 0));
+        $cleanCart = [];
+        foreach ($cart as $productNo => $quantity) {
+            $productNo = (int) $productNo;
+            $quantity = (int) $quantity;
+            if ($productNo > 0 && $quantity > 0) {
+                $cleanCart[$productNo] = min(20, $quantity);
+            }
+        }
+
+        $this->session->set('cart', $cleanCart);
     }
 }

@@ -17,6 +17,14 @@ final class ProductRepository
         return $this->database->fetchAll('SELECT * FROM products WHERE is_available = 1 ORDER BY product_no DESC');
     }
 
+    public function availableById(int $productNo): ?array
+    {
+        return $this->database->fetchOne(
+            'SELECT * FROM products WHERE product_no = ? AND is_available = 1',
+            [$productNo]
+        );
+    }
+
     public function all(): array
     {
         return $this->database->fetchAll('SELECT * FROM products ORDER BY product_no DESC');
