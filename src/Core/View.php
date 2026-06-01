@@ -33,7 +33,6 @@ final class View
         <header class="site-header">
             <a class="brand" href="/"><?= e($this->config['app_name']) ?></a>
             <nav>
-
                 <?php if ($this->auth->check()): ?>
                     <a href="/">Shop</a>
                     <a href="/admin/index.php">Admin Dashboard</a>
@@ -50,6 +49,7 @@ final class View
                 <?php endif; ?>
             </nav>
         </header>
+
         <main class="container">
             <?php if ($flash): ?>
                 <p class="flash"><?= e($flash) ?></p>
@@ -59,8 +59,17 @@ final class View
 
     public function footer(): void
     {
+        $isAdminPage = str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/admin');
         ?>
         </main>
+
+        <?php if (!$isAdminPage): ?>
+            <a class="floating-cart-button" href="/cart.php" aria-label="View shopping cart">
+                <span class="floating-cart-icon">🛒</span>
+                <span class="floating-cart-text">Cart</span>
+            </a>
+        <?php endif; ?>
+
         <footer class="site-footer">Darwin Art Store - CDU_HIT326_Group 4</footer>
         </body>
         </html>

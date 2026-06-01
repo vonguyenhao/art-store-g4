@@ -83,6 +83,18 @@ INSERT INTO products (description, category, price, colour, size, image_path, is
 SELECT 'Wet Season Clouds', 'Photography', 180.00, 'Grey and green', 'A2', NULL, 1
 WHERE (SELECT COUNT(*) FROM products) = 2;
 
+INSERT INTO products (description, category, price, colour, size, image_path, is_available)
+SELECT 'Larrakia Country Abstract', 'Painting', 520.00, 'Earth tones', '70cm x 50cm', NULL, 1
+WHERE (SELECT COUNT(*) FROM products) = 3;
+
+INSERT INTO products (description, category, price, colour, size, image_path, is_available)
+SELECT 'Nightcliff Foreshore Print', 'Print', 95.00, 'Blue and sand', 'A3', NULL, 1
+WHERE (SELECT COUNT(*) FROM products) = 4;
+
+INSERT INTO products (description, category, price, colour, size, image_path, is_available)
+SELECT 'Kakadu Wetlands Study', 'Photography', 210.00, 'Green and gold', 'A2', NULL, 1
+WHERE (SELECT COUNT(*) FROM products) = 5;
+
 INSERT INTO news (title, message, is_published)
 SELECT 'New Darwin collection available', 'Our latest artworks are now available for online orders.', 1
 WHERE NOT EXISTS (SELECT 1 FROM news);
@@ -90,3 +102,21 @@ WHERE NOT EXISTS (SELECT 1 FROM news);
 INSERT INTO admins (email, password_hash, role)
 SELECT 'admin@example.com', '$2y$10$kJ8OkVrmaROHTrACDZnRUO8VSuOtG0g0DNbbDDDQ48CDLceQwgiFG', 'owner'
 WHERE NOT EXISTS (SELECT 1 FROM admins WHERE email = 'admin@example.com');
+
+INSERT INTO testimonials (customer_email, customer_name, message, rating, status)
+SELECT 'mia@example.com', 'Mia Thompson', 'The artwork arrived with clear order details and the checkout process was easy to follow.', 5, 'approved'
+WHERE NOT EXISTS (
+    SELECT 1 FROM testimonials WHERE customer_email = 'mia@example.com'
+);
+
+INSERT INTO testimonials (customer_email, customer_name, message, rating, status)
+SELECT 'josh@example.com', 'Josh Williams', 'I liked being able to view the artwork details before adding it to the cart.', 4, 'approved'
+WHERE NOT EXISTS (
+    SELECT 1 FROM testimonials WHERE customer_email = 'josh@example.com'
+);
+
+INSERT INTO testimonials (customer_email, customer_name, message, rating, status)
+SELECT 'sarah@example.com', 'Sarah Lee', 'The testimonial form was simple to use. I understand that feedback needs approval before appearing publicly.', 5, 'pending'
+WHERE NOT EXISTS (
+    SELECT 1 FROM testimonials WHERE customer_email = 'sarah@example.com'
+);
