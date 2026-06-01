@@ -16,6 +16,7 @@ $view->header('Shop');
 try {
     $products = app('products')->available();
     $latestNews = app('news')->latestPublished();
+    $homepageTestimonials = app('testimonials')->approvedLimit(3);
 } catch (Throwable $error) {
     echo '<p class="error">' . e(dbErrorMessage($error)) . '</p>';
     $view->footer();
@@ -72,6 +73,24 @@ try {
 
 <?php if (!$products): ?>
     <p>No artworks are currently available.</p>
+<?php endif; ?>
+
+<?php if ($homepageTestimonials): ?>
+    <section class="panel homepage-testimonials">
+        <div class="section-heading">
+            <h2>What our customers say</h2>
+            <a href="/testimonials.php">View all testimonials</a>
+        </div>
+        <section class="grid testimonial-grid" aria-label="Customer testimonials">
+            <?php foreach ($homepageTestimonials as $testimonial): ?>
+                <article class="card testimonial-card">
+                    <h3><?= e($testimonial['customer_name']) ?></h3>
+                    <p class="rating-stars" aria-label="<?= (int) $testimonial['rating'] ?> out of 5 stars"><?= e(ratingStars($testimonial['rating'])) ?></p>
+                    <p><?= nl2br(e($testimonial['message'])) ?></p>
+                </article>
+            <?php endforeach; ?>
+        </section>
+    </section>
 <?php endif; ?>
 
 <?php $view->footer(); ?>

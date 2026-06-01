@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS testimonials (
     customer_email VARCHAR(255) NOT NULL,
     customer_name VARCHAR(160) NOT NULL,
     message TEXT NOT NULL,
+    rating TINYINT NOT NULL DEFAULT 5,
     status VARCHAR(20) NOT NULL DEFAULT 'pending',
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

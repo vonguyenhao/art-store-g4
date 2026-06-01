@@ -12,6 +12,12 @@ function money(float|string $amount): string
     return '$' . number_format((float) $amount, 2);
 }
 
+function ratingStars(int|string|null $rating): string
+{
+    $rating = max(1, min(5, (int) $rating));
+    return str_repeat('★', $rating) . str_repeat('☆', 5 - $rating);
+}
+
 function redirect(string $path): never
 {
     header('Location: ' . $path);

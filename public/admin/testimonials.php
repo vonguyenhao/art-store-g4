@@ -46,6 +46,7 @@ try {
     <thead>
         <tr>
             <th>Customer</th>
+            <th>Rating</th>
             <th>Message</th>
             <th>Status</th>
             <th>Action</th>
@@ -55,6 +56,7 @@ try {
         <?php foreach ($testimonials as $testimonial): ?>
             <tr>
                 <td><?= e($testimonial['customer_name']) ?><br><?= e($testimonial['customer_email']) ?></td>
+                <td><span class="rating-stars"><?= e(ratingStars($testimonial['rating'])) ?></span><br><?= (int) $testimonial['rating'] ?>/5</td>
                 <td><?= nl2br(e($testimonial['message'])) ?></td>
                 <td><?= e($testimonial['status']) ?></td>
                 <td>
