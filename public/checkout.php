@@ -117,7 +117,7 @@ try {
         <form method="post" action="/checkout.php">
             <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
             <label>Email
-        <input type="email" name="email" required readonly
+            <input type="email" name="email" required
             value="<?= e($_POST['email'] ?? $customer['email'] ?? '') ?>">
         </label>
 
