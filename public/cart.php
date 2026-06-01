@@ -78,7 +78,8 @@ try {
         <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
         <input type="hidden" name="action" value="update">
     </form>
-    <table>
+    <div class="table-wrap">
+    <table class="cart-table">
         <thead>
             <tr>
                 <th>Artwork</th>
@@ -100,6 +101,7 @@ try {
                     <td>
                         <input
                             form="cart-update-form"
+                            class="quantity-input"
                             type="number"
                             name="quantities[<?= (int) $item['product']['product_no'] ?>]"
                             value="<?= (int) $item['quantity'] ?>"
@@ -127,9 +129,10 @@ try {
                 </tr>
         </tfoot>
     </table>
+    </div>
     <div class="actions">
-        <button form="cart-update-form" type="submit">Update cart</button>
         <a class="button" href="/checkout.php">Checkout</a>
+        <button class="secondary" form="cart-update-form" type="submit">Update cart</button>
     </div>
     <form method="post" action="/cart.php">
         <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">

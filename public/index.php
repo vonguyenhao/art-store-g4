@@ -34,19 +34,28 @@ try {
 
 <section class="grid" aria-label="Available artworks">
     <?php foreach ($products as $product): ?>
-        <article class="card">
-            <h2>
-                <a href="/product.php?id=<?= (int) $product['product_no'] ?>">
-                    <?= e($product['description']) ?>
-                </a>
-            </h2>
-            <p class="muted">
-                <?= e($product['category']) ?>
-                <?php if ($product['colour']): ?> | <?= e($product['colour']) ?><?php endif; ?>
-                <?php if ($product['size']): ?> | <?= e($product['size']) ?><?php endif; ?>
-            </p>
-            <p class="price"><?= money($product['price']) ?></p>
-            <p><a href="/product.php?id=<?= (int) $product['product_no'] ?>">View details</a></p>
+        <article class="card product-card">
+            <a class="artwork-media" href="/product.php?id=<?= (int) $product['product_no'] ?>" aria-label="View <?= e($product['description']) ?>">
+                <?php if ($product['image_path']): ?>
+                    <img src="<?= e($product['image_path']) ?>" alt="<?= e($product['description']) ?>">
+                <?php else: ?>
+                    <span class="artwork-placeholder">Artwork image coming soon</span>
+                <?php endif; ?>
+            </a>
+            <div class="product-card-body">
+                <h2>
+                    <a href="/product.php?id=<?= (int) $product['product_no'] ?>">
+                        <?= e($product['description']) ?>
+                    </a>
+                </h2>
+                <p class="muted product-meta">
+                    <?= e($product['category']) ?>
+                    <?php if ($product['colour']): ?> | <?= e($product['colour']) ?><?php endif; ?>
+                    <?php if ($product['size']): ?> | <?= e($product['size']) ?><?php endif; ?>
+                </p>
+                <p class="price"><?= money($product['price']) ?></p>
+                <p><a href="/product.php?id=<?= (int) $product['product_no'] ?>">View details</a></p>
+            </div>
             <form method="post" action="/cart.php">
                 <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
                 <input type="hidden" name="action" value="add">

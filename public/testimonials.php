@@ -44,9 +44,9 @@ try {
     <p class="error"><?= e($testimonialError) ?></p>
 <?php endif; ?>
 
-<section class="grid">
+<section class="grid testimonial-grid">
     <?php foreach ($testimonials as $testimonial): ?>
-        <article class="card">
+        <article class="card testimonial-card">
             <h2><?= e($testimonial['customer_name']) ?></h2>
             <p><?= nl2br(e($testimonial['message'])) ?></p>
         </article>
@@ -54,16 +54,19 @@ try {
 </section>
 
 <?php if (!$testimonials): ?>
-    <p>No approved testimonials yet.</p>
+    <section class="panel empty-state">
+        <h2>No testimonials yet</h2>
+        <p>Approved customer testimonials will appear here after moderation.</p>
+    </section>
 <?php endif; ?>
 
-<section class="panel">
+<section class="panel testimonial-form-panel">
     <h2>Leave a testimonial</h2>
-    <form method="post" action="/testimonials.php">
+    <form class="testimonial-form" method="post" action="/testimonials.php">
         <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
         <label>Name <input name="customer_name" required></label>
         <label>Email <input type="email" name="customer_email" required></label>
-        <label>Message <textarea name="message" required></textarea></label>
+        <label class="message-field">Message <textarea name="message" required></textarea></label>
         <button type="submit">Submit for moderation</button>
     </form>
 </section>
