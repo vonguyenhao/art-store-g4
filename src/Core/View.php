@@ -29,7 +29,7 @@ final class View
             <title><?= e($title) ?> | <?= e($this->config['app_name']) ?></title>
             <link rel="stylesheet" href="/assets/style.css">
         </head>
-        <body>
+        <body class="<?= str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/admin') ? 'admin-section' : 'public-section' ?>">
         <header class="site-header">
             <a class="brand" href="/"><?= e($this->config['app_name']) ?></a>
             <nav>

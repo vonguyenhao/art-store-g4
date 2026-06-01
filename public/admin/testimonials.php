@@ -29,9 +29,20 @@ try {
 }
 ?>
 
-<h1>Moderate testimonials</h1>
+<section class="admin-page-header">
+    <p><a href="/admin/index.php">Back to dashboard</a></p>
+    <h1>Moderate testimonials</h1>
+    <p class="muted">Approve customer testimonials before they appear on the public page.</p>
+</section>
 
-<table>
+<?php if (!$testimonials): ?>
+    <section class="panel empty-state">
+        <h2>No testimonials submitted</h2>
+        <p>Customer testimonial submissions will appear here for moderation.</p>
+    </section>
+<?php else: ?>
+<div class="table-wrap">
+<table class="admin-table">
     <thead>
         <tr>
             <th>Customer</th>
@@ -58,9 +69,7 @@ try {
         <?php endforeach; ?>
     </tbody>
 </table>
-
-<?php if (!$testimonials): ?>
-    <p>No testimonials have been submitted yet.</p>
+</div>
 <?php endif; ?>
 
 <?php $view->footer(); ?>

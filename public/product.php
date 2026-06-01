@@ -31,7 +31,7 @@ try {
     <section class="product-detail">
         <div class="artwork-media artwork-media-large">
             <?php if ($product['image_path']): ?>
-                <img src="<?= e($product['image_path']) ?>" alt="<?= e($product['description']) ?>">
+                <img src="/product_image.php?id=<?= (int) $product['product_no'] ?>" alt="<?= e($product['description']) ?>">
             <?php else: ?>
                 <span class="artwork-placeholder">Artwork image coming soon</span>
             <?php endif; ?>

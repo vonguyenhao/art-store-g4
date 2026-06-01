@@ -30,6 +30,17 @@ final class ProductRepository
         return $this->database->fetchAll('SELECT * FROM products ORDER BY product_no DESC');
     }
 
+    public function find(int $productNo): ?array
+    {
+        return $this->database->fetchOne('SELECT * FROM products WHERE product_no = ?', [$productNo]);
+    }
+
+    public function imagePathUseCount(string $imagePath): int
+    {
+        $row = $this->database->fetchOne('SELECT COUNT(*) AS total FROM products WHERE image_path = ?', [$imagePath]);
+        return (int) ($row['total'] ?? 0);
+    }
+
     public function availableByIds(array $ids): array
     {
         if ($ids === []) {
@@ -48,7 +59,7 @@ final class ProductRepository
         if ((int) ($data['product_no'] ?? 0) > 0) {
             $this->database->execute(
                 'UPDATE products
-                 SET description = ?, category = ?, price = ?, colour = ?, size = ?, is_available = ?
+                 SET description = ?, category = ?, price = ?, colour = ?, size = ?, image_path = ?, is_available = ?
                  WHERE product_no = ?',
                 [
                     $data['description'],
@@ -56,6 +67,7 @@ final class ProductRepository
                     $data['price'],
                     $data['colour'],
                     $data['size'],
+                    $data['image_path'],
                     $data['is_available'],
                     $data['product_no'],
                 ]
@@ -64,14 +76,15 @@ final class ProductRepository
         }
 
         $this->database->execute(
-            'INSERT INTO products (description, category, price, colour, size, is_available)
-             VALUES (?, ?, ?, ?, ?, ?)',
+            'INSERT INTO products (description, category, price, colour, size, image_path, is_available)
+             VALUES (?, ?, ?, ?, ?, ?, ?)',
             [
                 $data['description'],
                 $data['category'],
                 $data['price'],
                 $data['colour'],
                 $data['size'],
+                $data['image_path'],
                 $data['is_available'],
             ]
         );

@@ -1,3 +1,5 @@
 storage/*.log
 storage/mail/*.log
 !storage/mail/.gitkeep
+storage/product-images/*
+!storage/product-images/.gitkeep

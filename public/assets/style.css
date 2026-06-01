@@ -20,6 +20,10 @@ body {
     line-height: 1.5;
 }
 
+body.admin-section {
+    background: var(--panel);
+}
+
 a {
     color: var(--accent);
 }
@@ -32,6 +36,10 @@ a {
     padding: 1rem clamp(1rem, 4vw, 3rem);
     border-bottom: 1px solid var(--line);
     background: #ffffff;
+}
+
+.admin-section .site-header {
+    border-bottom: 3px solid var(--accent);
 }
 
 .brand {
@@ -75,6 +83,16 @@ h1 {
     gap: 1.25rem;
 }
 
+.admin-page-header {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.admin-page-header p {
+    margin: 0 0 .5rem;
+}
+
 .card,
 .panel {
     border: 1px solid var(--line);
@@ -94,6 +112,26 @@ h1 {
 .card:hover {
     border-color: #a8b3c2;
     box-shadow: 0 10px 24px rgba(31, 41, 51, .08);
+}
+
+.admin-card {
+    display: grid;
+    gap: .75rem;
+    align-content: start;
+    padding: 1.25rem;
+}
+
+.admin-card .price {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.admin-dashboard-grid {
+    align-items: stretch;
+}
+
+.admin-list-grid {
+    margin-top: 1rem;
 }
 
 .card h2,
@@ -247,6 +285,18 @@ textarea {
     text-align: center;
 }
 
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    width: fit-content;
+}
+
+.checkbox-label input,
+td input[type="checkbox"] {
+    width: auto;
+}
+
 button,
 .button {
     display: inline-flex;
@@ -293,8 +343,40 @@ table {
     min-width: 680px;
 }
 
+.admin-table {
+    min-width: 760px;
+    background: #ffffff;
+}
+
 .cart-table thead {
     background: var(--panel);
+}
+
+.admin-table thead {
+    background: #eef6f5;
+}
+
+.admin-product-image,
+.admin-product-placeholder {
+    display: block;
+    width: 96px;
+    height: 72px;
+    margin-bottom: .75rem;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--panel);
+}
+
+.admin-product-image {
+    object-fit: cover;
+}
+
+.admin-product-placeholder {
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    font-size: .85rem;
+    text-align: center;
 }
 
 th,
@@ -357,6 +439,10 @@ tfoot th {
     color: var(--muted);
 }
 
+.admin-section .empty-state {
+    background: #ffffff;
+}
+
 @media (max-width: 760px) {
     .site-header,
     .split,
@@ -380,6 +466,18 @@ tfoot th {
 
     button,
     .button {
+        width: 100%;
+    }
+
+    .admin-page-header {
+        margin-bottom: 1rem;
+    }
+
+    .admin-card {
+        padding: 1rem;
+    }
+
+    .checkbox-label {
         width: 100%;
     }
 }

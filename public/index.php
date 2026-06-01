@@ -37,7 +37,7 @@ try {
         <article class="card product-card">
             <a class="artwork-media" href="/product.php?id=<?= (int) $product['product_no'] ?>" aria-label="View <?= e($product['description']) ?>">
                 <?php if ($product['image_path']): ?>
-                    <img src="<?= e($product['image_path']) ?>" alt="<?= e($product['description']) ?>">
+                    <img src="/product_image.php?id=<?= (int) $product['product_no'] ?>" alt="<?= e($product['description']) ?>">
                 <?php else: ?>
                     <span class="artwork-placeholder">Artwork image coming soon</span>
                 <?php endif; ?>

@@ -23,7 +23,11 @@ try {
 }
 ?>
 
-<h1>Orders</h1>
+<section class="admin-page-header">
+    <p><a href="/admin/index.php">Back to dashboard</a></p>
+    <h1>Orders</h1>
+    <p class="muted">Review submitted purchase orders and item details.</p>
+</section>
 
 <?php if ($selectedOrder): ?>
     <section class="panel">
@@ -34,7 +38,8 @@ try {
             <?= e($selectedOrder['phone']) ?><br>
             <?= e($selectedOrder['delivery_address']) ?>
         </p>
-        <table>
+        <div class="table-wrap">
+        <table class="admin-table">
             <thead><tr><th>Item</th><th>Quantity</th><th>Price</th><th>Total</th></tr></thead>
             <tbody>
                 <?php foreach ($items as $item): ?>
@@ -47,11 +52,19 @@ try {
                 <?php endforeach; ?>
             </tbody>
         </table>
+        </div>
         <p class="price">Order total <?= money($selectedOrder['total_amount']) ?></p>
     </section>
 <?php endif; ?>
 
-<table>
+<?php if (!$orders): ?>
+    <section class="panel empty-state">
+        <h2>No orders yet</h2>
+        <p>Submitted customer orders will appear here.</p>
+    </section>
+<?php else: ?>
+<div class="table-wrap">
+<table class="admin-table">
     <thead>
         <tr>
             <th>Purchase</th>
@@ -73,9 +86,7 @@ try {
         <?php endforeach; ?>
     </tbody>
 </table>
-
-<?php if (!$orders): ?>
-    <p>No orders have been submitted yet.</p>
+</div>
 <?php endif; ?>
 
 <?php $view->footer(); ?>
