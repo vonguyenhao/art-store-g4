@@ -79,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $purchaseNo = $checkout->submit($_POST);
             $session->set('last_purchase_no', $purchaseNo);
+            $session->flash('Order submitted.');
             redirect('/order_success.php');
         } catch (Throwable $error) {
             $errors[] = $error->getMessage();

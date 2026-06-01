@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($productNo) {
             $cartService->remove((int) $productNo);
         }
-        $session->flash('Artwork removed from cart.');
+        $session->flash('Item removed.');
     }
 
     if ($action === 'clear') {

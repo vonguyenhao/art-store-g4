@@ -33,24 +33,19 @@ final class View
         <header class="site-header">
             <a class="brand" href="/"><?= e($this->config['app_name']) ?></a>
             <nav>
-                
-                <a href="/">Shop</a>
-                <a href="/testimonials.php">Testimonials</a>
-                <a href="/cart.php">Cart (<?= $this->cart->count() ?>)</a>
 
-                    <?php if (isset($_SESSION['customer_email'])): ?>
-                        <a href="/account.php">My Account</a>
-                        <a href="/my_orders.php">My Orders</a>
-                        <a href="/logout.php">Logout</a>
-                    <?php else: ?>
-                        <a href="/login.php">Login</a>
-                        <a href="/register.php">Register</a>
-                    <?php endif; ?>
-
-                    <?php if ($this->auth->check()): ?>
-                    <a href="/admin/index.php">Admin</a>
+                <?php if ($this->auth->check()): ?>
+                    <a href="/">Shop</a>
+                    <a href="/admin/index.php">Admin Dashboard</a>
+                    <a href="/admin/products.php">Products</a>
+                    <a href="/admin/orders.php">Orders</a>
+                    <a href="/admin/news.php">News</a>
+                    <a href="/admin/testimonials.php">Testimonials Moderation</a>
                     <a href="/admin/logout.php">Logout</a>
                 <?php else: ?>
+                    <a href="/">Shop</a>
+                    <a href="/testimonials.php">Testimonials</a>
+                    <a href="/cart.php">Cart</a>
                     <a href="/admin/login.php">Admin</a>
                 <?php endif; ?>
             </nav>
@@ -66,7 +61,7 @@ final class View
     {
         ?>
         </main>
-        <footer class="site-footer">Functional prototype for HIT326 Option 2.</footer>
+        <footer class="site-footer">Darwin Art Store - CDU_HIT326_Group 4</footer>
         </body>
         </html>
         <?php

@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $testimonialsRepository->create($email, $name, $message);
-        $session->flash('Thank you. Your testimonial is waiting for moderation.');
+        $session->flash('Testimonial submitted for moderation.');
         redirect('/testimonials.php');
     } catch (Throwable $error) {
         $testimonialError = $error->getMessage();
