@@ -870,3 +870,125 @@ code {
         font-size: 1.5rem;
     }
 }
+.order-number-box {
+    margin: 1.5rem auto;
+    max-width: 280px;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    background: var(--accent-soft);
+    border: 1px solid rgba(15, 118, 110, 0.15);
+}
+
+.order-number-box span {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.order-number-box strong {
+    font-size: 2rem;
+    color: var(--accent-dark);
+}
+
+.success-divider {
+    height: 1px;
+    margin: 2rem 0;
+    background: var(--line);
+}
+
+.order-status {
+    text-align: left;
+    margin-bottom: 2rem;
+}
+
+.order-status h2 {
+    margin-bottom: 1.25rem;
+}
+
+.status-step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.status-step span {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    font-weight: 900;
+}
+
+.status-step.completed span {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.status-step strong {
+    display: block;
+    margin-bottom: 0.2rem;
+}
+
+.status-step p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.next-steps {
+    text-align: left;
+    margin-bottom: 2rem;
+}
+
+.next-steps ul {
+    margin: 1rem 0 0;
+    padding-left: 1.25rem;
+}
+
+.next-steps li {
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+}
+
+.success-actions {
+    justify-content: center;
+}
+
+.product-information {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+}
+
+.product-information h2 {
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.product-info-grid {
+    display: grid;
+    gap: 0.9rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-md);
+    background: var(--panel);
+}
+
+.info-item strong {
+    color: var(--ink);
+}
+
+.info-item span {
+    color: var(--muted);
+    text-align: right;
+}
