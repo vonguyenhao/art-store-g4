@@ -2,6 +2,7 @@
 
 require __DIR__ . '/../../src/bootstrap.php';
 
+header('Access-Control-Allow-Origin: http://localhost:5173');
 header('Content-Type: application/json');
 
 try {
