@@ -3,3 +3,5 @@ storage/mail/*.log
 !storage/mail/.gitkeep
 storage/product-images/*
 !storage/product-images/.gitkeep
+frontend/node_modules/
+node_modules/
