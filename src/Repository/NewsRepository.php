@@ -29,4 +29,22 @@ final class NewsRepository
             [$title, $message, $isPublished ? 1 : 0]
         );
     }
+
+    public function update(int $newsId, string $title, string $message, bool $isPublished): void
+    {
+        $this->database->execute(
+            'UPDATE news
+             SET title = ?, message = ?, is_published = ?
+             WHERE news_id = ?',
+            [$title, $message, $isPublished ? 1 : 0, $newsId]
+        );
+    }
+
+    public function delete(int $newsId): void
+    {
+        $this->database->execute(
+            'DELETE FROM news WHERE news_id = ?',
+            [$newsId]
+        );
+    }
 }

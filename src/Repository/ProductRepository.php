@@ -17,6 +17,30 @@ final class ProductRepository
         return $this->database->fetchAll('SELECT * FROM products WHERE is_available = 1 ORDER BY product_no DESC');
     }
 
+    public function searchAvailable(string $search): array
+    {
+        $search = trim($search);
+
+        if ($search === '') {
+            return $this->available();
+        }
+
+        $term = '%' . $search . '%';
+
+        return $this->database->fetchAll(
+            'SELECT * FROM products
+             WHERE is_available = 1
+             AND (
+                description LIKE ?
+                OR category LIKE ?
+                OR colour LIKE ?
+                OR size LIKE ?
+             )
+             ORDER BY product_no DESC',
+            [$term, $term, $term, $term]
+        );
+    }
+
     public function availableById(int $productNo): ?array
     {
         return $this->database->fetchOne(
