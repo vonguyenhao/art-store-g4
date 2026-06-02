@@ -7,6 +7,9 @@ function App() {
   const [csrfToken, setCsrfToken] = useState('');
 
 
+
+  // Fetches available products from the PHP backend
+
   useEffect(() => {
     fetch('http://localhost:8000/api/products.php')
       .then((response) => response.json())
@@ -20,6 +23,13 @@ function App() {
       });
   }, []);
 
+  // =========================
+  // CSRF Security Token
+  // =========================
+
+  // Retrieves CSRF token from PHP backend
+  // Used when submitting Add to Cart
+
    useEffect(() => {
     fetch('http://localhost:8000/api/csrf.php', {
       credentials: 'include',
@@ -28,12 +38,16 @@ function App() {
       .then((data) => setCsrfToken(data.csrf_token));
   }, []);
 
+  // Display loading message while products are being retrieved
   if (loading) {
     return <h1>Loading products...</h1>;
   }
 
   return (
   <main className="app">
+
+
+     {/* Navigation Bar */}
 
     <nav className="navbar">
       <button
@@ -52,12 +66,15 @@ function App() {
   </div>
 </nav>
 
+    {/* Site Notification */}
+
     <header className="header">
       <h1>New Darwin collection available</h1>
       <p>Our latest artworks are now available for online orders.</p>
 
     </header>
 
+          {/* Product Listing Grid */}
     <section className="product-grid">
       {products.map((product) => (
         <article className="product-card" key={product.product_no}>
