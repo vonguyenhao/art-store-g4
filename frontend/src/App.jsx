@@ -61,7 +61,17 @@ function App() {
     <section className="product-grid">
       {products.map((product) => (
         <article className="product-card" key={product.product_no}>
-          <div className="art-placeholder">Artwork image coming soon</div>
+          {product.image_path ? (
+            <img
+              className="product-image"
+              src={`http://localhost:8000/product_image.php?id=${product.product_no}`}
+              alt={product.description}
+            />
+          ) : (
+            <div className="art-placeholder">
+              Artwork image coming soon
+            </div>
+          )}
 
           <h2>{product.description}</h2>
           <p className="meta">{product.category} | {product.colour} | {product.size}</p>
