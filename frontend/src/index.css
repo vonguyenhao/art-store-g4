@@ -5,3 +5,14 @@
 body {
   margin: 0;
 }
+
+:root {
+    color-scheme: light;
+    font-family: Arial, Helvetica, sans-serif;
+    --ink: #1f2933;
+    --muted: #667085;
+    --line: #d9dee7;
+    --panel: #f7f8fb;
+    --accent: #0f766e;
+    --danger: #b42318;
+}
