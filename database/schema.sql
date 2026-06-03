@@ -120,3 +120,57 @@ SELECT 'sarah@example.com', 'Sarah Lee', 'The testimonial form was simple to use
 WHERE NOT EXISTS (
     SELECT 1 FROM testimonials WHERE customer_email = 'sarah@example.com'
 );
+
+INSERT INTO news (title, message, is_published)
+SELECT 'Mindil Beach inspired prints added', 'A new range of Mindil Beach inspired prints has been added to our online collection. These pieces highlight colour, movement, and local Darwin scenery.', 0
+WHERE NOT EXISTS (
+    SELECT 1 FROM news WHERE title = 'Mindil Beach inspired prints added'
+);
+
+INSERT INTO news (title, message, is_published)
+SELECT 'Local artist spotlight', 'This month we are highlighting local Northern Territory artists whose work is inspired by Darwin landscapes, coastline, markets, and wet season colours.', 0
+WHERE NOT EXISTS (
+    SELECT 1 FROM news WHERE title = 'Local artist spotlight'
+);
+
+INSERT INTO news (title, message, is_published)
+SELECT 'Online ordering now available', 'Customers can now browse artworks, add selected pieces to the cart, and submit purchase requests directly through the Darwin Art Store website.', 0
+WHERE NOT EXISTS (
+    SELECT 1 FROM news WHERE title = 'Online ordering now available'
+);
+
+INSERT INTO testimonials (customer_email, customer_name, message, rating, status)
+SELECT 'amelia@example.com', 'Amelia Brown', 'The product details were clear and the artwork information helped me choose the right piece for my living room.', 5, 'approved'
+WHERE NOT EXISTS (
+    SELECT 1 FROM testimonials WHERE customer_email = 'amelia@example.com'
+);
+
+INSERT INTO testimonials (customer_email, customer_name, message, rating, status)
+SELECT 'noah@example.com', 'Noah Martin', 'The online store was easy to use and I liked being able to review my cart before submitting an order.', 5, 'approved'
+WHERE NOT EXISTS (
+    SELECT 1 FROM testimonials WHERE customer_email = 'noah@example.com'
+);
+
+INSERT INTO testimonials (customer_email, customer_name, message, rating, status)
+SELECT 'ava@example.com', 'Ava Wilson', 'The Darwin-themed artworks feel unique and local. The ordering process was simple and professional.', 4, 'approved'
+WHERE NOT EXISTS (
+    SELECT 1 FROM testimonials WHERE customer_email = 'ava@example.com'
+);
+
+INSERT INTO testimonials (customer_email, customer_name, message, rating, status)
+SELECT 'liam@example.com', 'Liam Harris', 'I appreciated the clear artwork categories, prices, and size information before placing my order.', 4, 'approved'
+WHERE NOT EXISTS (
+    SELECT 1 FROM testimonials WHERE customer_email = 'liam@example.com'
+);
+
+INSERT INTO testimonials (customer_email, customer_name, message, rating, status)
+SELECT 'olivia@example.com', 'Olivia Taylor', 'The testimonial submission form was straightforward. I understand feedback is reviewed before being published.', 5, 'pending'
+WHERE NOT EXISTS (
+    SELECT 1 FROM testimonials WHERE customer_email = 'olivia@example.com'
+);
+
+INSERT INTO testimonials (customer_email, customer_name, message, rating, status)
+SELECT 'ethan@example.com', 'Ethan Clark', 'The website looks clean and the artwork pages provide enough detail for customers to make a decision.', 5, 'pending'
+WHERE NOT EXISTS (
+    SELECT 1 FROM testimonials WHERE customer_email = 'ethan@example.com'
+);
