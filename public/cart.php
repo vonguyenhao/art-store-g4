@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $session->flash($error->getMessage());
         }
 
-        redirect('/');
+        redirect('/cart.php');
     }
 
     if ($action === 'update') {
