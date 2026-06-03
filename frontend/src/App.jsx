@@ -102,6 +102,14 @@ function App() {
   </div>
 </section>
 
+<section className="panel news-panel">
+  <p className="eyebrow">Latest news</p>
+  <h2>New Darwin collection available</h2>
+  <p>
+    Our latest artworks are now available for online orders.
+  </p>
+</section>
+
     <section id="available-artworks" className="section-block">
       <div className="section-heading">
         <div>
