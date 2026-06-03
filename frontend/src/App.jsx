@@ -44,86 +44,132 @@ function App() {
   }
 
   return (
-  <main className="app">
 
+  <>
+  
+    
+    <header className="site-header">
+  <button
+    className="brand nav-brand-button"
+    onClick={() => window.location.href = '/'}
+  >
+    Darwin Art Store
+  </button>
 
-     {/* Navigation Bar */}
+  <nav>
+    <a href="/">Shop</a>
+    <a href="http://localhost:8000/testimonials.php">Testimonials</a>
+    <a href="http://localhost:8000/cart.php">Cart</a>
+    <a href="http://localhost:8000/admin/login.php">Admin</a>
+  </nav>
+</header>
 
-    <nav className="navbar">
-      <button
-      className="navbar-brand"
-      onClick={() => window.location.href = '/'}
-    >
-      Darwin Art Store
-    </button>
+<main className="container">
+    <section className="hero">
+      <div className="hero-content">
+        <p className="eyebrow">Darwin local art marketplace</p>
+        <h1>Discover original artworks from a small Darwin art company</h1>
+        <p>
+          Browse available artworks, view details, add pieces to your cart,
+          and submit a purchase request directly through our online store.
+        </p>
 
-  <div className="navbar-links">
+        <div className="actions">
+          <a className="button" href="#available-artworks">Browse artworks</a>
+          <button
+            className="button secondary"
+            onClick={() => window.location.href = 'http://localhost:8000/testimonials.php'}
+          >
+            Read testimonials
+          </button>
+        </div>
+      </div>
 
-    <button onClick={() => window.location.href = 'http://localhost:8000/cart.php'}>
-      Cart
-    </button>
+      <div className="hero-panel">
+        <h2>Why shop with us?</h2>
+        <ul className="feature-list">
+          <li>Original Darwin-inspired artworks</li>
+          <li>Clear product details before ordering</li>
+          <li>Simple online purchase request process</li>
+          <li>Positive customer feedback</li>
+        </ul>
+      </div>
+    </section>
 
-  </div>
-</nav>
+    <section id="available-artworks" className="section-block">
+      <div className="section-heading">
+        <div>
+          <p className="eyebrow">Available artworks</p>
+          <h2>Shop current pieces</h2>
+        </div>
+      </div>
 
-    {/* Site Notification */}
+      <section className="grid product-grid" aria-label="Available artworks">
+  {products.map((product) => (
+    <article className="card product-card" key={product.product_no}>
+      <a
+        className="artwork-media"
+        href={`http://localhost:8000/product.php?id=${product.product_no}`}
+        aria-label={`View ${product.description}`}
+      >
+        {product.image_path ? (
+          <img
+            src={`http://localhost:8000/product_image.php?id=${product.product_no}`}
+            alt={product.description}
+          />
+        ) : (
+          <span className="artwork-placeholder">
+            Artwork image coming soon
+          </span>
+        )}
+      </a>
 
-    <header className="header">
-      <h1>New Darwin collection available</h1>
-      <p>Our latest artworks are now available for online orders.</p>
+      <div className="product-card-body">
+        <p className="badge">{product.category}</p>
 
-    </header>
+        <h3>
+          <a href={`http://localhost:8000/product.php?id=${product.product_no}`}>
+            {product.description}
+          </a>
+        </h3>
 
-          {/* Product Listing Grid */}
-    <section className="product-grid">
-      {products.map((product) => (
-        <article className="product-card" key={product.product_no}>
-          {product.image_path ? (
-            <img
-              className="product-image"
-              src={`http://localhost:8000/product_image.php?id=${product.product_no}`}
-              alt={product.description}
-            />
-          ) : (
-            <div className="art-placeholder">
-              Artwork image coming soon
-            </div>
-          )}
+        <p className="muted product-meta">
+          {product.colour && <>Colour: {product.colour}</>}
+          {product.colour && product.size && ' | '}
+          {product.size && <>Size: {product.size}</>}
+        </p>
 
-          <h2>{product.description}</h2>
-          <p className="meta">{product.category} | {product.colour} | {product.size}</p>
-          <p className="price">${product.price}</p>
+        <p className="price">${product.price}</p>
+      </div>
 
-          <div className="actions">
-            <button
-              className="details-button"
-              onClick={() =>
-                window.location.href =
-                  `http://localhost:8000/product.php?id=${product.product_no}`
-              }
-            >
-              View Details
-            </button>
+      <form className="card-action-form" method="post" action="http://localhost:8000/cart.php">
+        <input type="hidden" name="csrf_token" value={csrfToken} />
+        <input type="hidden" name="action" value="add" />
+        <input type="hidden" name="product_no" value={product.product_no} />
 
-            <form method="post" action="http://localhost:8000/cart.php">
-              <input type="hidden" name="csrf_token" value={csrfToken} />
-              <input type="hidden" name="action" value="add" />
-              <input type="hidden" name="product_no" value={product.product_no} />
+        <label>
+          Quantity
+          <input type="number" name="quantity" defaultValue="1" min="1" max="20" required />
+        </label>
 
-              <label className="quantity-row">
-                Quantity
-                <input type="number" name="quantity" defaultValue="1" min="1" max="20" />
-              </label>
+        <div className="actions">
+          <button type="submit">Add to cart</button>
 
-              <button className="add-button" type="submit">
-                Add to Cart
-              </button>
-            </form>
-          </div>
-        </article>
-      ))}
+          <a
+            className="button secondary"
+            href={`http://localhost:8000/product.php?id=${product.product_no}`}
+          >
+            Details
+          </a>
+        </div>
+      </form>
+    </article>
+  ))}
+</section>
     </section>
   </main>
+
+  </>
 );
 
 }
