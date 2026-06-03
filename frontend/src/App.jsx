@@ -60,7 +60,6 @@ function App() {
     <a href="/">Shop</a>
     <a href="http://localhost:8000/testimonials.php">Testimonials</a>
     <a href="http://localhost:8000/cart.php">Cart</a>
-    <a href="http://localhost:8000/admin/login.php">Admin</a>
   </nav>
 </header>
 
@@ -73,16 +72,6 @@ function App() {
           Browse available artworks, view details, add pieces to your cart,
           and submit a purchase request directly through our online store.
         </p>
-
-        <div className="actions">
-          <a className="button" href="#available-artworks">Browse artworks</a>
-          <button
-            className="button secondary"
-            onClick={() => window.location.href = 'http://localhost:8000/testimonials.php'}
-          >
-            Read testimonials
-          </button>
-        </div>
       </div>
 
       <div className="hero-panel">
