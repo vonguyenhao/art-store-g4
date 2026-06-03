@@ -94,7 +94,7 @@ try {
             </select>
         </label>
         <label class="message-field">Message <textarea name="message" required></textarea></label>
-        <button type="submit">Submit for moderation</button>
+        <button type="submit">Submit</button>
     </form>
 </section>
 
