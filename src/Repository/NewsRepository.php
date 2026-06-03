@@ -52,6 +52,15 @@ final class NewsRepository
             throw new RuntimeException('Invalid news item selected.');
         }
 
+        $news = $this->database->fetchOne(
+            'SELECT news_id FROM news WHERE news_id = ? LIMIT 1',
+            [$newsId]
+        );
+
+        if (!$news) {
+            throw new RuntimeException('Invalid news item selected.');
+        }
+
         $this->database->execute('UPDATE news SET is_published = 0');
 
         $this->database->execute(
