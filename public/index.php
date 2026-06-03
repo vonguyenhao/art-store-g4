@@ -4,10 +4,13 @@ require __DIR__ . '/../src/bootstrap.php';
 
 $view = app('view');
 $csrf = app('csrf');
+$productsRepository = app('products');
+$search = trim($_GET['search'] ?? '');
+
 $view->header('Shop');
 
 try {
-    $products = app('products')->available();
+    $products = $productsRepository->searchAvailable($search);
     $latestNews = app('news')->latestPublished();
     $homepageTestimonials = app('testimonials')->approvedLimit(3);
 } catch (Throwable $error) {
@@ -58,12 +61,46 @@ try {
         </div>
     </div>
 
+    <section class="panel">
+        <form method="get" action="/#available-artworks">
+            <label>
+                Search artworks
+                <input
+                    type="search"
+                    name="search"
+                    value="<?= e($search) ?>"
+                    placeholder="Search by artwork name, category, colour, or size"
+                >
+            </label>
+
+            <div class="actions">
+                <button type="submit">Search</button>
+
+                <?php if ($search !== ''): ?>
+                    <a class="button secondary" href="/#available-artworks">Clear search</a>
+                <?php endif; ?>
+            </div>
+        </form>
+    </section>
+
     <?php if (!$products): ?>
         <section class="panel empty-state">
-            <h2>No artworks are currently available</h2>
-            <p>Please check back later for new Darwin artworks.</p>
+            <?php if ($search !== ''): ?>
+                <h2>No artworks found</h2>
+                <p>No available artworks matched your search for "<?= e($search) ?>". Try another keyword.</p>
+            <?php else: ?>
+                <h2>No artworks are currently available</h2>
+                <p>Please check back later for new Darwin artworks.</p>
+            <?php endif; ?>
         </section>
     <?php else: ?>
+        <?php if ($search !== ''): ?>
+            <p class="muted">
+                Showing <?= count($products) ?> result<?= count($products) === 1 ? '' : 's' ?>
+                for "<?= e($search) ?>".
+            </p>
+        <?php endif; ?>
+
         <section class="grid product-grid" aria-label="Available artworks">
             <?php foreach ($products as $product): ?>
                 <article class="card product-card">

@@ -46,7 +46,62 @@ final class NewsRepository
         );
     }
 
+    public function update(int $newsId, string $title, string $message, bool $isPublished): void
+    {
+        $title = trim($title);
+        $message = trim($message);
+
+        if ($title === '' || $message === '') {
+            throw new RuntimeException('Title and message are required.');
+        }
+
+        $this->ensureNewsExists($newsId);
+
+        if ($isPublished) {
+            $this->database->execute('UPDATE news SET is_published = 0');
+        }
+
+        $this->database->execute(
+            'UPDATE news
+             SET title = ?, message = ?, is_published = ?
+             WHERE news_id = ?',
+            [$title, $message, $isPublished ? 1 : 0, $newsId]
+        );
+    }
+
+    public function delete(int $newsId): void
+    {
+        $this->ensureNewsExists($newsId);
+
+        $this->database->execute(
+            'DELETE FROM news WHERE news_id = ?',
+            [$newsId]
+        );
+    }
+
     public function setHomepageNews(int $newsId): void
+    {
+        $this->ensureNewsExists($newsId);
+
+        $this->database->execute('UPDATE news SET is_published = 0');
+
+        $this->database->execute(
+            'UPDATE news SET is_published = 1 WHERE news_id = ?',
+            [$newsId]
+        );
+    }
+
+    public function unpublish(int $newsId): void
+    {
+        $this->ensureNewsExists($newsId);
+
+        $this->database->execute(
+            'UPDATE news SET is_published = 0 WHERE news_id = ?',
+            [$newsId]
+        );
+    }
+
+    private function ensureNewsExists(int $newsId): void
     {
         if ($newsId < 1) {
             throw new RuntimeException('Invalid news item selected.');
@@ -60,24 +115,5 @@ final class NewsRepository
         if (!$news) {
             throw new RuntimeException('Invalid news item selected.');
         }
-
-        $this->database->execute('UPDATE news SET is_published = 0');
-
-        $this->database->execute(
-            'UPDATE news SET is_published = 1 WHERE news_id = ?',
-            [$newsId]
-        );
-    }
-
-    public function unpublish(int $newsId): void
-    {
-        if ($newsId < 1) {
-            throw new RuntimeException('Invalid news item selected.');
-        }
-
-        $this->database->execute(
-            'UPDATE news SET is_published = 0 WHERE news_id = ?',
-            [$newsId]
-        );
     }
 }

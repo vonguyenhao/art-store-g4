@@ -10,6 +10,8 @@ $view = app('view');
 
 $auth->require();
 
+$editingNewsId = isset($_GET['edit']) ? (int) $_GET['edit'] : 0;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $csrf->verify($_POST);
 
@@ -17,21 +19,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $action = $_POST['action'] ?? 'create';
 
         if ($action === 'create') {
-            $title = trim($_POST['title'] ?? '');
-            $message = trim($_POST['message'] ?? '');
-
-            $newsRepository->create($title, $message, isset($_POST['is_published']));
+            $newsRepository->create(
+                trim($_POST['title'] ?? ''),
+                trim($_POST['message'] ?? ''),
+                isset($_POST['is_published'])
+            );
             $session->flash('News item added.');
-        }
-
-        if ($action === 'set_homepage') {
+        } elseif ($action === 'update') {
+            $newsRepository->update(
+                (int) ($_POST['news_id'] ?? 0),
+                trim($_POST['title'] ?? ''),
+                trim($_POST['message'] ?? ''),
+                isset($_POST['is_published'])
+            );
+            $session->flash('News item updated.');
+        } elseif ($action === 'delete') {
+            $newsRepository->delete((int) ($_POST['news_id'] ?? 0));
+            $session->flash('News item deleted.');
+        } elseif ($action === 'set_homepage') {
             $newsRepository->setHomepageNews((int) ($_POST['news_id'] ?? 0));
             $session->flash('Homepage news updated.');
-        }
-
-        if ($action === 'unpublish') {
+        } elseif ($action === 'unpublish') {
             $newsRepository->unpublish((int) ($_POST['news_id'] ?? 0));
             $session->flash('News item changed to draft.');
+        } else {
+            throw new RuntimeException('Invalid news action.');
         }
 
         redirect('/admin/news.php');
@@ -55,7 +67,7 @@ try {
     <p><a href="/admin/index.php">Back to dashboard</a></p>
     <h1>News management</h1>
     <p class="muted">
-        Create news updates and choose which item appears on the customer homepage.
+        Create, edit, remove, and choose which news item appears on the customer homepage.
     </p>
 </section>
 
@@ -63,31 +75,33 @@ try {
     <p class="error"><?= e($newsError) ?></p>
 <?php endif; ?>
 
-<section class="panel">
-    <h2>Add news item</h2>
+<?php if ($editingNewsId === 0): ?>
+    <section class="panel">
+        <h2>Add news item</h2>
 
-    <form method="post" action="/admin/news.php">
-        <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
-        <input type="hidden" name="action" value="create">
+        <form method="post" action="/admin/news.php">
+            <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
+            <input type="hidden" name="action" value="create">
 
-        <label>
-            Title
-            <input name="title" required>
-        </label>
+            <label>
+                Title
+                <input name="title" required>
+            </label>
 
-        <label>
-            Message
-            <textarea name="message" required></textarea>
-        </label>
+            <label>
+                Message
+                <textarea name="message" required></textarea>
+            </label>
 
-        <label class="checkbox-label">
-            <input type="checkbox" name="is_published" value="1">
-            Set as homepage news now
-        </label>
+            <label class="checkbox-label">
+                <input type="checkbox" name="is_published" value="1">
+                Set as homepage news now
+            </label>
 
-        <button type="submit">Add news</button>
-    </form>
-</section>
+            <button type="submit">Add news</button>
+        </form>
+    </section>
+<?php endif; ?>
 
 <?php if (!$newsItems): ?>
     <section class="panel empty-state">
@@ -98,38 +112,81 @@ try {
 
 <section class="grid admin-list-grid">
     <?php foreach ($newsItems as $news): ?>
+        <?php if ($editingNewsId !== 0 && $editingNewsId !== (int) $news['news_id']): ?>
+            <?php continue; ?>
+        <?php endif; ?>
+
         <article class="card admin-card admin-news-card">
-            <?php if ((int) $news['is_published'] === 1): ?>
-                <p class="badge">Showing on homepage</p>
+            <?php if ($editingNewsId === (int) $news['news_id']): ?>
+                <h2>Edit news item</h2>
+
+                <form method="post" action="/admin/news.php">
+                    <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="news_id" value="<?= (int) $news['news_id'] ?>">
+
+                    <label>
+                        Title
+                        <input name="title" value="<?= e($news['title']) ?>" required>
+                    </label>
+
+                    <label>
+                        Message
+                        <textarea name="message" required><?= e($news['message']) ?></textarea>
+                    </label>
+
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="is_published" value="1" <?= (int) $news['is_published'] === 1 ? 'checked' : '' ?>>
+                        Show on homepage
+                    </label>
+
+                    <div class="actions">
+                        <button type="submit">Save changes</button>
+                        <a class="button secondary" href="/admin/news.php">Back</a>
+                    </div>
+                </form>
             <?php else: ?>
-                <p class="badge">Draft</p>
-            <?php endif; ?>
-
-            <h2><?= e($news['title']) ?></h2>
-
-            <p><?= nl2br(e($news['message'])) ?></p>
-
-            <p class="muted">
-                Created: <?= e($news['created_at']) ?>
-            </p>
-
-            <div class="actions admin-news-actions">
-                <?php if ((int) $news['is_published'] !== 1): ?>
-                    <form method="post" action="/admin/news.php">
-                        <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
-                        <input type="hidden" name="action" value="set_homepage">
-                        <input type="hidden" name="news_id" value="<?= (int) $news['news_id'] ?>">
-                        <button type="submit">Set as homepage news</button>
-                    </form>
+                <?php if ((int) $news['is_published'] === 1): ?>
+                    <p class="badge">Showing on homepage</p>
                 <?php else: ?>
-                    <form method="post" action="/admin/news.php">
-                        <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
-                        <input type="hidden" name="action" value="unpublish">
-                        <input type="hidden" name="news_id" value="<?= (int) $news['news_id'] ?>">
-                        <button class="secondary" type="submit">Hide from homepage</button>
-                    </form>
+                    <p class="badge">Draft</p>
                 <?php endif; ?>
-            </div>
+
+                <h2><?= e($news['title']) ?></h2>
+
+                <p><?= nl2br(e($news['message'])) ?></p>
+
+                <p class="muted">
+                    Created: <?= e($news['created_at']) ?>
+                </p>
+
+                <div class="actions admin-news-actions">
+                    <a class="button" href="/admin/news.php?edit=<?= (int) $news['news_id'] ?>">Edit</a>
+
+                    <?php if ((int) $news['is_published'] !== 1): ?>
+                        <form method="post" action="/admin/news.php">
+                            <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
+                            <input type="hidden" name="action" value="set_homepage">
+                            <input type="hidden" name="news_id" value="<?= (int) $news['news_id'] ?>">
+                            <button type="submit">Set as homepage news</button>
+                        </form>
+                    <?php else: ?>
+                        <form method="post" action="/admin/news.php">
+                            <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
+                            <input type="hidden" name="action" value="unpublish">
+                            <input type="hidden" name="news_id" value="<?= (int) $news['news_id'] ?>">
+                            <button class="secondary" type="submit">Hide from homepage</button>
+                        </form>
+                    <?php endif; ?>
+
+                    <form method="post" action="/admin/news.php" onsubmit="return confirm('Delete this news item?');">
+                        <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="news_id" value="<?= (int) $news['news_id'] ?>">
+                        <button class="secondary" type="submit">Delete news</button>
+                    </form>
+                </div>
+            <?php endif; ?>
         </article>
     <?php endforeach; ?>
 </section>
