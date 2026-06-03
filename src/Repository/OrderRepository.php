@@ -57,8 +57,8 @@ final class OrderRepository
                 "SELECT COUNT(*) AS total FROM testimonials WHERE status = 'pending'"
             )['total'] ?? 0,
 
-            'pending_orders' => $this->database->fetchOne(
-                "SELECT COUNT(*) AS total FROM purchases WHERE status = 'pending'"
+            'received_orders' => $this->database->fetchOne(
+                "SELECT COUNT(*) AS total FROM purchases WHERE status = 'received'"
             )['total'] ?? 0,
 
             'processing_orders' => $this->database->fetchOne(
@@ -78,7 +78,7 @@ final class OrderRepository
     public function updateStatus(int $purchaseNo, string $status): void
     {
         $allowedStatuses = [
-            'pending',
+            'received',
             'processing',
             'completed',
             'cancelled'

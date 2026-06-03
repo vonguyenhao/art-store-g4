@@ -62,9 +62,9 @@ try {
 
     <section class="grid admin-dashboard-grid">
         <article class="card admin-card">
-            <h2>Pending</h2>
-            <p class="price"><?= (int) $counts['pending_orders'] ?></p>
-            <p class="muted">Orders waiting for staff review.</p>
+            <h2>Received</h2>
+            <p class="price"><?= (int) $counts['received_orders'] ?></p>
+            <p class="muted">Orders received and waiting for staff review.</p>
         </article>
 
         <article class="card admin-card">

@@ -129,7 +129,7 @@ try {
                                 <input type="hidden" name="purchase_no" value="<?= (int) $order['purchase_no'] ?>">
 
                                 <select name="status">
-                                    <?php foreach (['pending', 'processing', 'completed', 'cancelled'] as $status): ?>
+                                    <?php foreach (['received', 'processing', 'completed', 'cancelled'] as $status): ?>
                                         <option value="<?= e($status) ?>" <?= $order['status'] === $status ? 'selected' : '' ?>>
                                             <?= e(ucfirst($status)) ?>
                                         </option>

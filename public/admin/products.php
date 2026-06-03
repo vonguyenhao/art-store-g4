@@ -109,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $existingProduct = $productNo > 0 ? $productsRepository->find($productNo) : null;
+
         if ($productNo > 0 && !$existingProduct) {
             throw new RuntimeException('Product could not be found.');
         }
@@ -116,6 +117,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $oldImagePath = $existingProduct['image_path'] ?? null;
         $newImagePath = uploadedProductImageFilename($_FILES['image'] ?? []);
         $imagePath = $newImagePath ?? $oldImagePath;
+
+        $isAvailable = isset($_POST['is_available']) ? 1 : 0;
 
         $productsRepository->save([
             'product_no' => $productNo,
@@ -125,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'colour' => trim($_POST['colour'] ?? ''),
             'size' => trim($_POST['size'] ?? ''),
             'image_path' => $imagePath,
-            'is_available' => isset($_POST['is_available']) ? 1 : 0,
+            'is_available' => $isAvailable,
         ]);
 
         if ($newImagePath && $oldImagePath && $newImagePath !== $oldImagePath) {
@@ -133,7 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $session->flash($productNo > 0 ? 'Product updated.' : 'Product added.');
-
         redirect('/admin/products.php');
     } catch (Throwable $error) {
         if ($newImagePath) {
@@ -142,6 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 unlink($path);
             }
         }
+
         $productError = $error->getMessage();
     }
 }
@@ -160,7 +163,7 @@ try {
 <section class="admin-page-header">
     <p><a href="/admin/index.php">Back to dashboard</a></p>
     <h1>Product management</h1>
-    <p class="muted">Add artworks, edit product details, and mark items unavailable on the storefront.</p>
+    <p class="muted">Add artworks, update product details, upload images, and control customer availability.</p>
 </section>
 
 <?php if (!empty($productError)): ?>
@@ -169,62 +172,84 @@ try {
 
 <section class="panel">
     <h2>Add product</h2>
+
     <form method="post" action="/admin/products.php" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
+
         <label>Description <input name="description" required></label>
         <label>Category <input name="category" required></label>
         <label>Price <input type="number" step="0.01" min="0.01" name="price" required></label>
         <label>Colour <input name="colour"></label>
         <label>Size <input name="size"></label>
         <label>Artwork image <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"></label>
-        <label class="checkbox-label"><input type="checkbox" name="is_available" value="1" checked> Available on storefront</label>
+
+        <label class="checkbox-label">
+            <input type="checkbox" name="is_available" value="1" checked>
+            Available for customers to order
+        </label>
+
         <button type="submit">Add product</button>
     </form>
 </section>
 
 <section class="panel">
     <h2>Existing products</h2>
+
     <?php if (!$products): ?>
         <p class="muted">No products have been added yet.</p>
     <?php else: ?>
-    <div class="table-wrap">
-    <table class="admin-table">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Available</th>
-                <th>Update</th>
-            </tr>
-        </thead>
-        <tbody>
+        <section class="grid admin-list-grid">
             <?php foreach ($products as $product): ?>
-                <tr>
+                <article class="card admin-card">
                     <form method="post" action="/admin/products.php" enctype="multipart/form-data">
-                        <td>
-                            <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
-                            <input type="hidden" name="product_no" value="<?= (int) $product['product_no'] ?>">
-                            <?php if ($product['image_path']): ?>
-                                <img class="admin-product-image" src="/product_image.php?id=<?= (int) $product['product_no'] ?>" alt="<?= e($product['description']) ?>">
-                            <?php else: ?>
-                                <div class="admin-product-placeholder">No image</div>
-                            <?php endif; ?>
+                        <input type="hidden" name="csrf_token" value="<?= e($csrf->token()) ?>">
+                        <input type="hidden" name="product_no" value="<?= (int) $product['product_no'] ?>">
+
+                        <?php if ($product['image_path']): ?>
+                            <img class="admin-product-image" src="/product_image.php?id=<?= (int) $product['product_no'] ?>" alt="<?= e($product['description']) ?>">
+                        <?php else: ?>
+                            <div class="admin-product-placeholder">No image</div>
+                        <?php endif; ?>
+
+                        <label>Description
                             <input name="description" value="<?= e($product['description']) ?>" required>
-                            <input name="colour" value="<?= e($product['colour']) ?>" placeholder="Colour">
-                            <input name="size" value="<?= e($product['size']) ?>" placeholder="Size">
+                        </label>
+
+                        <label>Category
+                            <input name="category" value="<?= e($product['category']) ?>" required>
+                        </label>
+
+                        <label>Price
+                            <input type="number" step="0.01" min="0.01" name="price" value="<?= e($product['price']) ?>" required>
+                        </label>
+
+                        <label>Colour
+                            <input name="colour" value="<?= e($product['colour']) ?>">
+                        </label>
+
+                        <label>Size
+                            <input name="size" value="<?= e($product['size']) ?>">
+                        </label>
+
+                        <label>Replace image
                             <input type="file" name="image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
-                        </td>
-                        <td><input name="category" value="<?= e($product['category']) ?>" required></td>
-                        <td><input type="number" step="0.01" min="0.01" name="price" value="<?= e($product['price']) ?>" required></td>
-                        <td><input type="checkbox" name="is_available" value="1" <?= $product['is_available'] ? 'checked' : '' ?>></td>
-                        <td><button type="submit">Save</button></td>
+                        </label>
+
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="is_available" value="1" <?= $product['is_available'] ? 'checked' : '' ?>>
+                            Available for customers to order
+                        </label>
+
+                        <p class="muted">
+                            Current status:
+                            <strong><?= $product['is_available'] ? 'Available' : 'Unavailable' ?></strong>
+                        </p>
+
+                        <button type="submit">Save changes</button>
                     </form>
-                </tr>
+                </article>
             <?php endforeach; ?>
-        </tbody>
-    </table>
-    </div>
+        </section>
     <?php endif; ?>
 </section>
 
