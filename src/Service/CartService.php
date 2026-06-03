@@ -10,6 +10,8 @@ use RuntimeException;
 
 final class CartService
 {
+    private const MAX_QUANTITY_PER_PRODUCT = 20;
+
     public function __construct(
         private readonly Session $session,
         private readonly ProductRepository $products
@@ -31,21 +33,58 @@ final class CartService
             throw new RuntimeException('Please enter a quantity of at least 1.');
         }
 
-        if (!$this->products->availableById($productNo)) {
-            throw new RuntimeException('This artwork is no longer available.');
+        $product = $this->products->availableById($productNo);
+
+        if (!$product) {
+            throw new RuntimeException('This artwork is currently out of stock or unavailable.');
         }
 
         $cart = $this->raw();
-        $cart[$productNo] = min(20, ((int) ($cart[$productNo] ?? 0)) + min(20, $quantity));
+
+        $currentQuantity = (int) ($cart[$productNo] ?? 0);
+
+        if ($currentQuantity >= self::MAX_QUANTITY_PER_PRODUCT) {
+            throw new RuntimeException('You already have the maximum quantity for this artwork in your cart.');
+        }
+
+        $newQuantity = $currentQuantity + $quantity;
+
+        if ($newQuantity > self::MAX_QUANTITY_PER_PRODUCT) {
+            throw new RuntimeException(
+                'Only ' . self::MAX_QUANTITY_PER_PRODUCT . ' of this artwork can be added to one order.'
+            );
+        }
+
+        $cart[$productNo] = $newQuantity;
+
         $this->set($cart);
     }
 
     public function update(array $quantities): void
     {
         $cart = [];
+
         foreach ($quantities as $productNo => $quantity) {
-            $cart[(int) $productNo] = max(0, min(20, (int) $quantity));
+            $productNo = (int) $productNo;
+            $quantity = (int) $quantity;
+
+            if ($productNo < 1 || $quantity < 1) {
+                continue;
+            }
+
+            if (!$this->products->availableById($productNo)) {
+                continue;
+            }
+
+            if ($quantity > self::MAX_QUANTITY_PER_PRODUCT) {
+                throw new RuntimeException(
+                    'Quantity cannot be more than ' . self::MAX_QUANTITY_PER_PRODUCT . ' for one artwork.'
+                );
+            }
+
+            $cart[$productNo] = $quantity;
         }
+
         $this->set($cart);
     }
 
@@ -76,17 +115,26 @@ final class CartService
         foreach ($this->products->availableByIds(array_keys($cart)) as $product) {
             $productNo = (int) $product['product_no'];
             $availableProductNos[] = $productNo;
+
             $quantity = (int) ($cart[$productNo] ?? 0);
+
             if ($quantity < 1) {
                 continue;
             }
 
             $lineTotal = $quantity * (float) $product['price'];
-            $items[] = compact('product', 'quantity', 'lineTotal');
+
+            $items[] = [
+                'product' => $product,
+                'quantity' => $quantity,
+                'lineTotal' => $lineTotal,
+            ];
+
             $total += $lineTotal;
         }
 
         $removedCount = count(array_diff(array_map('intval', array_keys($cart)), $availableProductNos));
+
         if ($removedCount > 0) {
             $this->set(array_intersect_key($cart, array_flip($availableProductNos)));
         }
@@ -97,11 +145,13 @@ final class CartService
     private function set(array $cart): void
     {
         $cleanCart = [];
+
         foreach ($cart as $productNo => $quantity) {
             $productNo = (int) $productNo;
             $quantity = (int) $quantity;
+
             if ($productNo > 0 && $quantity > 0) {
-                $cleanCart[$productNo] = min(20, $quantity);
+                $cleanCart[$productNo] = min(self::MAX_QUANTITY_PER_PRODUCT, $quantity);
             }
         }
 

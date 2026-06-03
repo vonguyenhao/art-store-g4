@@ -31,8 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($action === 'update') {
-        $cartService->update($_POST['quantities'] ?? []);
-        $session->flash('Cart updated.');
+        try {
+            $cartService->update($_POST['quantities'] ?? []);
+            $session->flash('Cart updated.');
+        } catch (Throwable $error) {
+            $session->flash($error->getMessage());
+        }
     }
 
     if ($action === 'remove') {

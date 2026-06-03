@@ -20,6 +20,8 @@ final class View
     public function header(string $title): void
     {
         $flash = $this->session->flash();
+        $isAdminPage = str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/admin');
+        $cartCount = $this->cart->count();
         ?>
         <!doctype html>
         <html lang="en">
@@ -29,11 +31,12 @@ final class View
             <title><?= e($title) ?> | <?= e($this->config['app_name']) ?></title>
             <link rel="stylesheet" href="/assets/style.css">
         </head>
-        <body class="<?= str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/admin') ? 'admin-section' : 'public-section' ?>">
+
+        <body class="<?= $isAdminPage ? 'admin-section' : 'public-section' ?>">
         <header class="site-header">
             <a class="brand" href="/"><?= e($this->config['app_name']) ?></a>
-            <nav>
 
+            <nav>
                 <?php if ($this->auth->check()): ?>
                     <a href="/">Shop</a>
                     <a href="/admin/index.php">Admin Dashboard</a>
@@ -45,11 +48,14 @@ final class View
                 <?php else: ?>
                     <a href="/">Shop</a>
                     <a href="/testimonials.php">Testimonials</a>
-                    <a href="/cart.php">Cart</a>
+                    <a href="/cart.php">
+                        Cart<?= $cartCount > 0 ? ' (' . (int) $cartCount . ')' : '' ?>
+                    </a>
                     <a href="/admin/login.php">Admin</a>
                 <?php endif; ?>
             </nav>
         </header>
+
         <main class="container">
             <?php if ($flash): ?>
                 <p class="flash"><?= e($flash) ?></p>
@@ -59,8 +65,23 @@ final class View
 
     public function footer(): void
     {
+        $isAdminPage = str_starts_with($_SERVER['REQUEST_URI'] ?? '', '/admin');
+        $cartCount = $this->cart->count();
         ?>
         </main>
+
+        <?php if (!$isAdminPage): ?>
+            <a class="floating-cart-button" href="/cart.php" aria-label="View shopping cart">
+                <span class="floating-cart-icon">🛒</span>
+
+                <?php if ($cartCount > 0): ?>
+                    <span class="floating-cart-count"><?= (int) $cartCount ?></span>
+                <?php endif; ?>
+
+                <span class="floating-cart-text">Cart</span>
+            </a>
+        <?php endif; ?>
+
         <footer class="site-footer">Darwin Art Store - CDU_HIT326_Group 4</footer>
         </body>
         </html>

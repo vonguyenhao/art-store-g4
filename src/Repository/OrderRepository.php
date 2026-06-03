@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Core\Database;
+use RuntimeException;
 
 final class OrderRepository
 {
@@ -35,28 +36,89 @@ final class OrderRepository
 
     public function items(int $purchaseNo): array
     {
-        return $this->database->fetchAll('SELECT * FROM purchase_items WHERE purchase_no = ?', [$purchaseNo]);
+        return $this->database->fetchAll(
+            'SELECT * FROM purchase_items WHERE purchase_no = ?',
+            [$purchaseNo]
+        );
     }
 
     public function counts(): array
     {
         return [
-            'products' => $this->database->fetchOne('SELECT COUNT(*) AS total FROM products')['total'] ?? 0,
-            'orders' => $this->database->fetchOne('SELECT COUNT(*) AS total FROM purchases')['total'] ?? 0,
-            'pending' => $this->database->fetchOne("SELECT COUNT(*) AS total FROM testimonials WHERE status = 'pending'")['total'] ?? 0,
+            'products' => $this->database->fetchOne(
+                'SELECT COUNT(*) AS total FROM products'
+            )['total'] ?? 0,
+
+            'orders' => $this->database->fetchOne(
+                'SELECT COUNT(*) AS total FROM purchases'
+            )['total'] ?? 0,
+
+            'pending' => $this->database->fetchOne(
+                "SELECT COUNT(*) AS total FROM testimonials WHERE status = 'pending'"
+            )['total'] ?? 0,
+
+            'received_orders' => $this->database->fetchOne(
+                "SELECT COUNT(*) AS total FROM purchases WHERE status = 'received'"
+            )['total'] ?? 0,
+
+            'processing_orders' => $this->database->fetchOne(
+                "SELECT COUNT(*) AS total FROM purchases WHERE status = 'processing'"
+            )['total'] ?? 0,
+
+            'completed_orders' => $this->database->fetchOne(
+                "SELECT COUNT(*) AS total FROM purchases WHERE status = 'completed'"
+            )['total'] ?? 0,
+
+            'cancelled_orders' => $this->database->fetchOne(
+                "SELECT COUNT(*) AS total FROM purchases WHERE status = 'cancelled'"
+            )['total'] ?? 0,
         ];
     }
 
-    public function create(array $customer, string $deliveryAddress, array $items, float $total): int
+    public function updateStatus(int $purchaseNo, string $status): void
     {
+        $allowedStatuses = [
+            'received',
+            'processing',
+            'completed',
+            'cancelled'
+        ];
+
+        if ($purchaseNo < 1 || !in_array($status, $allowedStatuses, true)) {
+            throw new RuntimeException('Invalid order status.');
+        }
+
+        $this->database->execute(
+            'UPDATE purchases SET status = ? WHERE purchase_no = ?',
+            [$status, $purchaseNo]
+        );
+    }
+
+    public function create(
+        array $customer,
+        string $deliveryAddress,
+        array $items,
+        float $total
+    ): int {
         $pdo = $this->database->connection();
         $pdo->beginTransaction();
 
         try {
             $stmt = $pdo->prepare(
-                'INSERT INTO customers (email, title, first_name, last_name, address, city, state, postcode, country, phone)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                 ON DUPLICATE KEY UPDATE
+                'INSERT INTO customers (
+                    email,
+                    title,
+                    first_name,
+                    last_name,
+                    address,
+                    city,
+                    state,
+                    postcode,
+                    country,
+                    phone
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE
                     title = VALUES(title),
                     first_name = VALUES(first_name),
                     last_name = VALUES(last_name),
@@ -67,6 +129,7 @@ final class OrderRepository
                     country = VALUES(country),
                     phone = VALUES(phone)'
             );
+
             $stmt->execute([
                 $customer['email'],
                 $customer['title'],
@@ -81,14 +144,29 @@ final class OrderRepository
             ]);
 
             $stmt = $pdo->prepare(
-                'INSERT INTO purchases (customer_email, delivery_address, total_amount) VALUES (?, ?, ?)'
+                'INSERT INTO purchases
+                (customer_email, delivery_address, total_amount)
+                VALUES (?, ?, ?)'
             );
-            $stmt->execute([$customer['email'], $deliveryAddress, $total]);
+
+            $stmt->execute([
+                $customer['email'],
+                $deliveryAddress,
+                $total
+            ]);
+
             $purchaseNo = (int) $pdo->lastInsertId();
 
             $stmt = $pdo->prepare(
-                'INSERT INTO purchase_items (purchase_no, product_no, quantity, item_price, description_snapshot)
-                 VALUES (?, ?, ?, ?, ?)'
+                'INSERT INTO purchase_items
+                (
+                    purchase_no,
+                    product_no,
+                    quantity,
+                    item_price,
+                    description_snapshot
+                )
+                VALUES (?, ?, ?, ?, ?)'
             );
 
             foreach ($items as $item) {
@@ -102,11 +180,13 @@ final class OrderRepository
             }
 
             $pdo->commit();
+
             return $purchaseNo;
         } catch (\Throwable $error) {
             if ($pdo->inTransaction()) {
                 $pdo->rollBack();
             }
+
             throw $error;
         }
     }
