@@ -5,6 +5,7 @@ function App() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [csrfToken, setCsrfToken] = useState('');
+  const [search, setSearch] = useState('');
 
 
 
@@ -49,15 +50,15 @@ function App() {
   
     
     <header className="site-header">
-  <button
-    className="brand nav-brand-button"
-    onClick={() => window.location.href = '/'}
-  >
-    Darwin Art Store
-  </button>
+
+  <a
+  className="brand"
+  href="/"
+>
+  Darwin Art Store
+</a>
 
   <nav>
-    <a href="/">Shop</a>
     <a href="http://localhost:8000/testimonials.php">Testimonials</a>
     <a href="http://localhost:8000/cart.php">Cart</a>
   </nav>
@@ -65,25 +66,41 @@ function App() {
 
 <main className="container">
     <section className="hero">
-      <div className="hero-content">
-        <p className="eyebrow">Darwin local art marketplace</p>
-        <h1>Discover original artworks from a small Darwin art company</h1>
-        <p>
-          Browse available artworks, view details, add pieces to your cart,
-          and submit a purchase request directly through our online store.
-        </p>
-      </div>
+  <div className="hero-content">
+    <p className="eyebrow">Darwin local art marketplace</p>
 
-      <div className="hero-panel">
-        <h2>Why shop with us?</h2>
-        <ul className="feature-list">
-          <li>Original Darwin-inspired artworks</li>
-          <li>Clear product details before ordering</li>
-          <li>Simple online purchase request process</li>
-          <li>Positive customer feedback</li>
-        </ul>
-      </div>
-    </section>
+    <h1>Discover original artworks from a small Darwin art company</h1>
+
+    <p>
+      Browse available artworks, view details, add pieces to your cart,
+      and submit a purchase request directly through our online store.
+    </p>
+
+    <div className="actions">
+      <a className="button" href="#available-artworks">
+        Browse artworks
+      </a>
+
+      <a
+        className="button secondary"
+        href="http://localhost:8000/testimonials.php"
+      >
+        Read testimonials
+      </a>
+    </div>
+  </div>
+
+  <div className="hero-panel">
+    <h2>Why shop with us?</h2>
+
+    <ul className="feature-list">
+      <li>Original Darwin-inspired artworks</li>
+      <li>Clear product details before ordering</li>
+      <li>Simple online purchase request process</li>
+      <li>Positive customer feedback</li>
+    </ul>
+  </div>
+</section>
 
     <section id="available-artworks" className="section-block">
       <div className="section-heading">
