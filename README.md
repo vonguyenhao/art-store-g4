@@ -1,76 +1,93 @@
-# Darwin Art Store
+# HIT326 Darwin Art Store
 
-Functional prototype for HIT326 Option 2: a small Darwin art company moving from a static website to a database-driven online ordering system.
+## Project Brief
 
-## Features
+This is a PHP + MySQL database-driven online art store for Darwin Art Company. Customers can browse artworks, view product details, add items to a cart, and checkout using email. Admin users can manage products, upload product images, view orders, manage news, and moderate testimonials. The official submitted app is the PHP/MySQL version served from `public/index.php`.
 
-- Customer storefront showing available artworks.
-- Shopping cart with add, update, and clear actions.
-- Checkout form that stores customers, purchases, and purchase items in MySQL.
-- Simulated buyer and business order emails written to `storage/mail/orders.log`.
-- Front page news item controlled by the owner.
-- Buyer testimonials with admin moderation.
-- Admin login, product management, order viewing, news posting, and testimonial approval.
-- GitHub Actions CI/CD starter workflow in `.github/workflows/ci-cd.yml`.
+## Technology Stack
 
-## Requirements
+- PHP
+- MySQL
+- HTML
+- CSS
+- JavaScript
 
-- PHP 8.2 or newer with PDO MySQL.
-- MySQL 8 or MariaDB.
-- A web server pointed at the `public` directory.
+`frontend/` contains an optional React/Vite experiment, but React is not required for final testing or submission.
+
+## Application Flow
+
+### Customer Flow
+
+`Homepage -> Product Listing/Search -> Product Detail -> Add to Cart -> Cart -> Guest Checkout -> Order Confirmation`
+
+Customers start from the homepage or product listing page, browse/search artworks, open a product detail page, and add products to the session cart. They can review, update, remove, or clear cart items before completing guest checkout using email, name, phone, and delivery address. The order is saved into the database and displayed on the order confirmation page.
+
+### Admin Flow
+
+`Admin Login -> Dashboard -> Manage Products / Orders / News / Testimonials`
+
+Admin users log in through the admin login page. They can manage products and upload product images, view customer orders and update order status, create/edit/delete/select homepage news, and approve or reject testimonials before they appear publicly.
+
+### Data Flow
+
+`PHP Page/Form -> PHP Service/Repository -> MySQL Database -> PHP Rendered Response`
+
+User actions are submitted through PHP pages/forms. PHP validates input and uses service/repository classes to store or retrieve data from MySQL, then renders the result back through PHP pages.
 
 ## Local Setup
 
-1. Create a MySQL database named `art_store`.
-2. Import the schema:
+1. Start MySQL using XAMPP, WAMP, or MAMP.
+2. Create a database named:
+   `art_store`
+3. Import:
+   `database/schema.sql`
+4. From the project root, run:
+   `php -S 127.0.0.1:8000 -t public`
+5. Open:
+   `http://127.0.0.1:8000`
 
-   ```bash
-   mysql -u root -p art_store < database/schema.sql
-   ```
+`public/` is the document root.
 
-3. Configure database credentials with environment variables if your local values are not the defaults:
+If using an old local database, run:
 
-   ```bash
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_NAME=art_store
-   DB_USER=root
-   DB_PASSWORD=
-   ORDER_HANDLING_EMAIL=orders@example.com
-   ```
+```sql
+ALTER TABLE testimonials ADD COLUMN rating TINYINT NOT NULL DEFAULT 5;
+```
 
-4. Run the development server:
+## Team Roles
 
-   ```bash
-   php -S localhost:8000 -t public
-   ```
+- Kevin/Hao: Product and cart flow, product detail page, cart validation, integration checking, final review.
+- Olice: Database, product management, admin support, order/news integration.
+- James: Checkout and order flow, customer lookup/create by email, purchase and purchase item saving.
+- Ashesh: Frontend layout, homepage, news display, testimonials, UI/UX polish.
 
-5. Open `http://localhost:8000`.
+## Key Features
 
-## Admin Login
+- Product listing and search
+- Product detail page
+- Product image upload and display
+- Session-based shopping cart
+- Guest checkout by email
+- Order confirmation
+- Admin login
+- Product management
+- Order status management
+- News management
+- Testimonial submission, moderation, rating, and filtering
+- PHP CI validation
 
-After importing `database/schema.sql`, use:
+## Scope Notes
 
-- Email: `admin@example.com`
-- Password: `admin123`
+- Customer login/register/account/my_orders pages are outside the baseline proposal scope.
+- Baseline customer flow is guest checkout by email.
+- Product images are not stored as database BLOBs.
+- Uploaded product images are stored in `storage/product-images/` and served through `/product_image.php?id=<product_id>`.
+- GitHub Actions is CI only.
+- No Spinetail, no GitHub Pages, and no automatic deployment.
 
-Change this seeded password before any real deployment.
+## Do Not Commit
 
-## Project Documents
-
-- Project plan: `docs/option-2-project-plan.md`
-- Database schema: `database/schema.sql`
-- CI/CD workflow: `.github/workflows/ci-cd.yml`
-
-## Code Structure
-
-- `src/Core`: framework-style concerns such as database connection, session, CSRF, and layout rendering.
-- `src/Repository`: database queries for products, news, orders, admins, and testimonials.
-- `src/Service`: business logic for cart handling, authentication, checkout, and order notification.
-- `public`: thin web entry points that validate requests, call services, and render HTML.
-
-This keeps page scripts small and follows the main SOLID idea: each class has one clear responsibility, and checkout depends on an `OrderNotifierInterface` so the simulated file email can later be replaced by real email without rewriting checkout logic.
-
-## CI/CD Note
-
-The workflow line `uses: shivammathur/setup-php@v2` means GitHub Actions downloads and runs the `setup-php` action from the GitHub account or organisation named `shivammathur`. It is not an application user. That action installs the PHP version and PHP extensions requested by the workflow before linting and testing the project.
+- `frontend/node_modules/`
+- `storage/mail/orders.log`
+- uploaded files inside `storage/product-images/`
+- local secrets or database credentials

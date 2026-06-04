@@ -59,10 +59,10 @@ try {
         <p class="price"><?= money($product['price']) ?></p>
 
         <div class="product-extra">
-            <p>✔ Local Darwin artwork</p>
-            <p>✔ Secure packaging included</p>
-            <p>✔ Delivery available Australia-wide</p>
-            <p>✔ Maximum 20 units per order</p>
+            <p>- Local Darwin artwork</p>
+            <p>- Secure packaging included</p>
+            <p>- Delivery available Australia-wide</p>
+            <p>- Maximum 20 units per order</p>
         </div>
 
         <?php if ($product['is_available']): ?>
