@@ -76,18 +76,4 @@ ALTER TABLE testimonials ADD COLUMN rating TINYINT NOT NULL DEFAULT 5;
 - Testimonial submission, moderation, rating, and filtering
 - PHP CI validation
 
-## Scope Notes
 
-- Customer login/register/account/my_orders pages are outside the baseline proposal scope.
-- Baseline customer flow is guest checkout by email.
-- Product images are not stored as database BLOBs.
-- Uploaded product images are stored in `storage/product-images/` and served through `/product_image.php?id=<product_id>`.
-- GitHub Actions is CI only.
-- No Spinetail, no GitHub Pages, and no automatic deployment.
-
-## Do Not Commit
-
-- `frontend/node_modules/`
-- `storage/mail/orders.log`
-- uploaded files inside `storage/product-images/`
-- local secrets or database credentials
