@@ -34,11 +34,11 @@ final class View
 
         <body class="<?= $isAdminPage ? 'admin-section' : 'public-section' ?>">
         <header class="site-header">
-            <a class="brand" href="/"><?= e($this->config['app_name']) ?></a>
+            <a class="brand" href="http://localhost:5173"><?= e($this->config['app_name']) ?></a>
 
             <nav>
                 <?php if ($this->auth->check()): ?>
-                    <a href="/">Shop</a>
+                    <a href="http://localhost:5173">Shop</a>
                     <a href="/admin/index.php">Admin Dashboard</a>
                     <a href="/admin/products.php">Products</a>
                     <a href="/admin/orders.php">Orders</a>
@@ -46,7 +46,7 @@ final class View
                     <a href="/admin/testimonials.php">Testimonials Moderation</a>
                     <a href="/admin/logout.php">Logout</a>
                 <?php else: ?>
-                    <a href="/">Shop</a>
+                    <a href="http://localhost:5173">Shop</a>
                     <a href="/testimonials.php">Testimonials</a>
                     <a href="/cart.php">
                         Cart<?= $cartCount > 0 ? ' (' . (int) $cartCount . ')' : '' ?>

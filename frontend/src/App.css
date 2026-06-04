@@ -17,6 +17,7 @@ body.admin-section {
 
 a {
     color: var(--accent);
+    text-underline-offset: 3px;
 }
 
 .site-header {

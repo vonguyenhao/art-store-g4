@@ -59,8 +59,10 @@ function App() {
 </a>
 
   <nav>
+    <a href="http://localhost:5173">Shop</a>
     <a href="http://localhost:8000/testimonials.php">Testimonials</a>
     <a href="http://localhost:8000/cart.php">Cart</a>
+    <a href="http://localhost:8000/admin/login.php">Admin</a>
   </nav>
 </header>
 
