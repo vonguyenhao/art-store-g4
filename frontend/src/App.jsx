@@ -44,6 +44,18 @@ function App() {
     return <h1>Loading products...</h1>;
   }
 
+
+  const filteredProducts = products.filter((product) => {
+  const searchableText = `
+    ${product.description}
+    ${product.category}
+    ${product.colour || ''}
+    ${product.size || ''}
+  `.toLowerCase();
+
+  return searchableText.includes(search.toLowerCase());
+});
+
   return (
 
   <>
@@ -120,8 +132,34 @@ function App() {
         </div>
       </div>
 
+      <section className="panel">
+  <form onSubmit={(event) => event.preventDefault()}>
+    <label>
+      Search artworks
+      <input
+        type="search"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        placeholder="Search by artwork name, category, colour, or size"
+      />
+    </label>
+
+    <div className="actions">
+      {search !== '' && (
+        <button
+          type="button"
+          className="secondary"
+          onClick={() => setSearch('')}
+        >
+          Clear search
+        </button>
+      )}
+    </div>
+  </form>
+</section>
+
       <section className="grid product-grid" aria-label="Available artworks">
-  {products.map((product) => (
+  {filteredProducts.map((product) => (
     <article className="card product-card" key={product.product_no}>
       <a
         className="artwork-media"
